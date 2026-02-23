@@ -1,18 +1,26 @@
 package domain
 
-type Field struct {
-	Name *string
-	Type *string
+type StorableType int
 
-	Values []any
+const (
+	Int StorableType = iota
+	String
+)
+
+type Column struct {
+	Name string
+	Type StorableType
 }
 
+type Row []any
+
 type Table struct {
-	Name   string
-	Fields []Field
+	Name    string
+	Columns []Column
+	Rows    []Row
 }
 
 type Database struct {
 	Name   string
-	Tables *[]Table
+	Tables map[string]*Table
 }
