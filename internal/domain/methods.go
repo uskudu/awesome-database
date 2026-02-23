@@ -6,35 +6,21 @@ import (
 	"text/tabwriter"
 )
 
-func CreateTable(name string, fields ...Field) Table {
+type DB interface {
+	CreateTable(name string, field ...Field) Table
+}
+
+func NewDatabase(name string) *Database {
+	return &Database{Name: name}
+}
+
+func (db *Database) CreateTable(name string, fields ...Field) Table {
 	var table Table
 	table.Name = name
 	for _, f := range fields {
 		table.Fields = append(table.Fields, f)
 	}
 	return table
-}
-
-func TableMetadata(t *Table) {
-	if t == nil {
-		return
-	}
-
-	fmt.Println("Table:", t.Name)
-
-	for _, f := range t.Fields {
-		name := "<nil>"
-		typ := "<nil>"
-
-		if f.Name != nil {
-			name = *f.Name
-		}
-		if f.Type != nil {
-			typ = *f.Type
-		}
-
-		fmt.Printf("  Field: %s, Type: %s\n", name, typ)
-	}
 }
 
 func ShowTable(t *Table) {
