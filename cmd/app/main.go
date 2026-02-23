@@ -2,21 +2,26 @@ package main
 
 import (
 	"awesomeDatabase/internal/domain"
+	"fmt"
 )
 
 func main() {
-	db := domain.NewDatabase("horses")
+	db := domain.NewDatabase("business")
 
 	_ = db.CreateTable(
-		"names", []domain.Column{
+		"horses", []domain.Column{
 			{Name: "id", Type: domain.Int},
 			{Name: "name", Type: domain.String},
+			{Name: "age", Type: domain.Int},
 		})
 
-	_ = db.InsertRows("names", 0, "henry")
-	_ = db.InsertRows("names", 1, "brain")
-	_ = db.InsertRows("names", 2, "herman")
-	_ = db.InsertRows("names", 3, "hosas")
+	_ = db.InsertRows("horses", 0, "henry", 3)
+	_ = db.InsertRows("horses", 1, "brain", 2)
+	_ = db.InsertRows("horses", 2, "herman", 4)
+	_ = db.InsertRows("horses", 3, "hosas", 4)
 
-	_ = db.PrintTable("names")
+	//_ = db.PrintTable("names")
+
+	d, _ := db.GetRowByID("horses", 0)
+	fmt.Println(d)
 }

@@ -10,6 +10,8 @@ import (
 type DB interface {
 	CreateTable(name string, cols []Column) error
 	PrintTable(name string) error
+	InsertRows(tableName string, values ...any) error
+	GetRowByID(tableName string, id int) (Row, error)
 }
 
 func NewDatabase(name string) *Database {
@@ -19,8 +21,15 @@ func NewDatabase(name string) *Database {
 	}
 }
 
+func tableExists(m map[string]*Table, key string) bool {
+	if _, yes := m[key]; yes {
+		return true
+	}
+	return false
+}
+
 func (db *Database) CreateTable(name string, cols []Column) error {
-	if _, exists := db.Tables[name]; exists {
+	if tableExists(db.Tables, name) {
 		return errors.New("table already exists")
 	}
 
@@ -39,6 +48,7 @@ func (db *Database) PrintTable(name string) error {
 	if !exists {
 		return errors.New("table doesnt exist")
 	}
+
 	const padding = 3
 	w := tabwriter.NewWriter(os.Stdout, 0, 0, padding, ' ', 0)
 	defer w.Flush()
@@ -61,10 +71,10 @@ func (db *Database) PrintTable(name string) error {
 }
 
 func (db *Database) InsertRows(tableName string, values ...any) error {
-	if _, exists := db.Tables[tableName]; !exists {
+	if !tableExists(db.Tables, tableName) {
 		return errors.New("table doesnt exist")
 	}
-	
+
 	cols := db.Tables[tableName].Columns
 	if len(values) != len(cols) {
 		return fmt.Errorf("expected %d values, got %d", len(cols), len(values))
@@ -86,11 +96,18 @@ func (db *Database) InsertRows(tableName string, values ...any) error {
 	return nil
 }
 
-//func (db *Database) GetRow(name string) (Row, error) {
-//	if _, exists := db.Tables[name]; !exists {
-//		return nil, errors.New("table doesnt exist")
-//	}
-//}
+func (db *Database) GetRowByID(tableName string, id int) (Row, error) {
+	if !tableExists(db.Tables, tableName) {
+		return nil, errors.New("table doesnt exist")
+	}
+	for i := 0; i < len(db.Tables[tableName].Rows); i++ {
+		if id == db.Tables[tableName].Rows[i][0] {
+			return db.Tables[tableName].Rows[i], nil
+		}
+	}
+
+	return nil, fmt.Errorf("row with id %d doesnt exist", id)
+}
 
 //func (db *Database) Filter() (Row, error)
 // func (db *Database) DeleteRow(name string) (string, error)
