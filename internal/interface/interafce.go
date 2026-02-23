@@ -1,13 +1,5 @@
 package _interface
 
-//import (
-//	"awesomeDatabase/internal/domain"
-//	"fmt"
-//	"os"
-//
-//	"text/tabwriter"
-//)
-//
 //type Database interface {
 //	// ddl
 //	CreateTable() error // create new table in this db
