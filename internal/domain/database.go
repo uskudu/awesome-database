@@ -6,11 +6,13 @@ type Field struct {
 
 	Values []any
 }
+
 type Table struct {
 	Name   string
 	Fields []Field
 }
 
 type Database struct {
+	Name   string
 	Tables *[]Table
 }

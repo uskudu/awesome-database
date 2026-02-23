@@ -1,10 +1,28 @@
 package domain
 
-type TransactionLevel string
-type ReadUncommitedLevel TransactionLevel
-type ReadCommitedLevel TransactionLevel
-type RepeatableReadLevel TransactionLevel
-type SerializableLevel TransactionLevel
+type IsolationLevel int
+
+const (
+	ReadUncommited IsolationLevel = iota
+	ReadCommitted
+	RepeatableRead
+	Serializable
+)
+
+func (l IsolationLevel) String() string {
+	switch l {
+	case ReadUncommited:
+		return "READ UNCOMMITED"
+	case ReadCommitted:
+		return "READ COMMITTED"
+	case RepeatableRead:
+		return "REPEATABLE READ"
+	case Serializable:
+		return "SERIALIZABLE"
+	default:
+		return "UNKNOWN"
+	}
+}
 
 type Transaction struct {
 }
