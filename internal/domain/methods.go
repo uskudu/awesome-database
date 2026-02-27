@@ -4,6 +4,8 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"strconv"
+	"strings"
 	"text/tabwriter"
 )
 
@@ -26,6 +28,39 @@ func tableExists(m map[string]*Table, key string) bool {
 		return true
 	}
 	return false
+}
+
+type columns struct {
+	name string
+	typ  string
+}
+
+func (db *Database) String() string {
+	var b strings.Builder
+
+	b.WriteString("database name: ")
+	b.WriteString(db.Name)
+	b.WriteString("\ndatabase number: ")
+	b.WriteString(strconv.Itoa(len(db.Tables)))
+	b.WriteString("\n")
+
+	for _, table := range db.Tables {
+		b.WriteString("\ntable: ")
+		b.WriteString(table.Name)
+		b.WriteString("\n")
+
+		for _, col := range table.Columns {
+			switch col.Type {
+			case Int:
+				b.WriteString(col.Name)
+				b.WriteString(" INTEGER\n")
+			case String:
+				b.WriteString(col.Name)
+				b.WriteString(" STRING\n")
+			}
+		}
+	}
+	return b.String()
 }
 
 func (db *Database) CreateTable(name string, cols []Column) error {
